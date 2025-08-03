@@ -1,6 +1,7 @@
 package com.debika.Employee.Attendance.Leave.Management.System.config;
 
 import com.debika.Employee.Attendance.Leave.Management.System.model.UserDetailsImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,13 +19,20 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+
 @Configuration
 @EnableWebSecurity
 public class AppConfig implements WebMvcConfigurer {
 
     private static final String[] WHITE_LIST_URL = {
             "/api/auth/login",
-            "/api/auth/signup"
+            "/api/auth/signup",
+            "/api/employees/**",
+            "/api/attendance/mark",
+            "/api/attendance/**",
+            "/api/leave/apply",
+            "/api/leave/**",
+
     };
 
 
@@ -42,7 +50,8 @@ public class AppConfig implements WebMvcConfigurer {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
+//                .cors(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth.requestMatchers(WHITE_LIST_URL).permitAll())
                 .build();
     }
@@ -70,6 +79,9 @@ public class AppConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowCredentials(true)
                 .allowedOriginPatterns("*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*");
     }
+
+
 }

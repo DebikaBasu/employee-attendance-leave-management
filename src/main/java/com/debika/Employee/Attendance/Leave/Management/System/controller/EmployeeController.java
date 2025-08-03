@@ -9,14 +9,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/employees")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
 
-    @GetMapping
+    @GetMapping("/all")
     public List<EmployeeDTO> getAllEmployees() {
+//        System.out.println("Current User: " + authentication.getName());
         return employeeService.getAllEmployees();
     }
 

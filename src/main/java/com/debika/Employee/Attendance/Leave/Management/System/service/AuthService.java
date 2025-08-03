@@ -7,6 +7,7 @@ import com.debika.Employee.Attendance.Leave.Management.System.model.Employee;
 import com.debika.Employee.Attendance.Leave.Management.System.model.Role;
 import com.debika.Employee.Attendance.Leave.Management.System.repository.EmployeeRepository;
 import com.debika.Employee.Attendance.Leave.Management.System.util.JwtUtils;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,17 +58,18 @@ public class AuthService {
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             if (!passwordEncoder.matches(request.getPassword(), emp.getPassword())) {
-                throw new RuntimeException("Invalid credentials");
+                throw new EntityNotFoundException("Invalid credentials");
             }
 
             Map<String, Object> claims = new HashMap<>();
-            claims.put("username", emp.getUsername());
+            claims.put("username", emp.getEmail());
             claims.put("role", emp.getRole()); // more useful than password
 
-            String token = jwtUtils.createToken(claims, emp.getUsername());
-            return new JwtResponseDTO(token, emp.getUsername());
+            String token = jwtUtils.createToken(claims, emp.getEmail());
+            return new JwtResponseDTO(token, emp.getEmail());
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("Authentication failed: " + e.getMessage());
         }
     }

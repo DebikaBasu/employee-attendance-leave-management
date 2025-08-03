@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Map;
 
@@ -32,22 +33,13 @@ public class JwtUtils {
         log.info("JWT Expiration (ms): {}", jwtExpirationMs);
     }
 
-//    public String generateJwtToken(String username) {
-//        if (jwtSecret == null || jwtSecret.isEmpty()) {
-//            throw new IllegalArgumentException("JWT secret key cannot be null or empty");
-//        }
-//
-//        return Jwts.builder()
-//                .setSubject(username)
-//                .setIssuedAt(new Date())
-//                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-//                .signWith(getSignKey())
-//                .compact();
-//    }
-
     public String createToken(Map<String, Object> claims, String email) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationMs + 1000L);
+//        Date now = new Date();
+//        Date expiryDate = new Date(now.getTime() + jwtExpirationMs + 1000L);
+
+
+        LocalDate expiryLocalDate = LocalDate.now().plusDays(Long.parseLong(jwtExpirationMs) / (1000 * 60 * 60 * 24));
+        Date expiryDate = new Date(expiryLocalDate.toEpochDay() * 24 * 60 * 60 * 1000);
         return Jwts.builder()
                 .claims(claims)
                 .issuedAt(new Date(System.currentTimeMillis()))
